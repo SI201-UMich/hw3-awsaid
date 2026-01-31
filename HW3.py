@@ -1,12 +1,13 @@
-# Name:
-# Student ID:
-# Email:
+# Name: Antonio Said
+# Student ID: 7851 9368
+# Email: awsaid@umich.edu
 # Who or what you worked with on this homework (including generative AI like ChatGPT):
 # If you worked with generative AI also add a statement for how you used it.
-# e.g.:
+# e.g.: 
+# I used AI when I couldn't figure out what the first question was asking and for how to actually run the code in visual studio, which I'm still very confused on.
 # Asked ChatGPT hints for debugging and suggesting the general structure of the code
 # Did your use of GenAI on this assignment align with your goals and guidelines in 
-#    your Gen AI contract? If not, why?
+#    your Gen AI contract? If not, why? Yes it lined up with my goals since I only used it when I was confused and didn't know where to go.
 
 import random
 import io
@@ -26,43 +27,32 @@ class CouponDispenser:
     """
 
     def __init__(self, coupon_cards):
-        """
-        Initialize a new CouponDispenser object.
+        self.coupon_cards = coupon_cards
+        self.customer_roster = []
+        self.issued_indices = []
 
-        Args:
-            coupon_cards (list[str]): list of possible coupons users can receive.
-        """
-        # TODO: Implement per instructions
-        pass
 
     def __str__(self):
-        """
-        Return a single string with all coupons in coupon_cards joined by pipes ('|').
-        If coupon_cards is empty, return an empty string "".
-
-        Returns:
-            str
-        """
-        # TODO: Implement per instructions
-        pass
+        if len(self.coupon_cards) == 0:
+            return ""
+        return "|".join(self.coupon_cards)
 
     def issue_coupon(self, name):
-        """
-        Assign name with a random coupon. If name is already assigned a coupon, return it.
-        If the list coupon_cards is empty, return:
-        "The box is empty."
+        if len(self.coupon_cards) == 0:
+            return "The box is empty."
+        if name in self.customer_roster:
+            names = self.customer_roster.index(name)
+            coupon = self.coupon_cards[self.issued_indices[names]]
+            return f"That name already has a coupon: {coupon}"
+        
 
-        Important: Do not use dictionaries in this method.
+        randomindex = random.randrange(len(self.coupon_cards))
+        self.customer_roster.append(name)
+        self.issued_indices.append(randomindex)
 
-        Args:
-            name (str): customer name (trimmed, non-empty)
 
-        Returns:
-            str: message as described above
-        """
-        # TODO: Implement per instructions
-        pass
-
+        return self.coupon_cards[randomindex]
+        
     def distribute_session(self):
         """
         Run the "coupon dispenser" session.
@@ -78,10 +68,51 @@ class CouponDispenser:
 
         Reminder: Use lists only (no dictionaries).
         """
-        # TODO: Implement per instructions 
-        pass
+
+
+        round = 1
+
+        while True:
+            user_input = input("Round " + str(round) + " - Enter a name (or a comma-separated list), or type 'show' or 'exit': ")
+
+            if user_input == "exit":
+                print("Goodbye!")
+                break
+
+            elif user_input == "show":
+                for i in range(len(self.customer_roster)):
+                    name = self.customer_roster[i]
+                    couponindex = self.issued_indices[i]
+                    coupon = self.coupon_cards[couponindex]
+                    print(name + ": " + coupon)
+
+            else:
+                names = user_input.split(",")
+                for piece in names:
+                    bettername = piece.strip()
+                    if bettername != "":
+                        message = self.issue_coupon(bettername)
+                        print(message)
+
+            round += 1
+
+
 
     def tally_distribution(self):
+        if len(self.issued_indices) == 0:
+            print("Empty")
+            return
+
+        for i in range(len(self.coupon_cards)):
+            count = 0
+
+            for j in range(len(self.issued_indices)):
+                if self.issued_indices[j] == i:
+                    count += 1
+            print(self.coupon_cards[i] + " distribution count: " + str(count) + ".")
+
+
+
         """
         Extra credit:
         Print coupon distribution counts (NO sorting) using ONLY lists.
@@ -96,8 +127,6 @@ class CouponDispenser:
         Returns:
             None
         """
-        # TODO: Implement per instructions
-        pass
 
 
 def main():
@@ -114,12 +143,10 @@ def main():
         "Buy 1 get 1 half off",
         "Free extra espresso shot",
     ]
-
-    # Uncomment the lines below as you implement each function.
-    # box = CouponDispenser(coupon_cards)
-    # box.distribute_session()
-    # box.tally_distribution()
-    pass
+    
+    box = CouponDispenser(coupon_cards)
+    box.distribute_session()
+    box.tally_distribution()
 
 
 # -----------------------
